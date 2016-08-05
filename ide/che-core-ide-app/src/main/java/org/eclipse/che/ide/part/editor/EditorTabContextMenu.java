@@ -15,14 +15,17 @@ import com.google.inject.Provider;
 import com.google.inject.assistedinject.Assisted;
 
 import org.eclipse.che.ide.api.action.Action;
+import org.eclipse.che.ide.api.action.ActionGroup;
 import org.eclipse.che.ide.api.action.ActionManager;
 import org.eclipse.che.ide.api.action.IdeActions;
+import org.eclipse.che.ide.api.action.Presentation;
 import org.eclipse.che.ide.api.keybinding.KeyBindingAgent;
 import org.eclipse.che.ide.api.parts.PerspectiveManager;
 import org.eclipse.che.ide.menu.ContextMenu;
-import org.eclipse.che.ide.part.widgets.editortab.EditorTab;
+import org.eclipse.che.ide.api.parts.EditorTab;
 
 import static org.eclipse.che.ide.part.editor.actions.EditorAbstractAction.CURRENT_FILE_PROP;
+import static org.eclipse.che.ide.part.editor.actions.EditorAbstractAction.CURRENT_TAB_PROP;
 import static org.eclipse.che.ide.part.editor.actions.PinEditorTabAction.PROP_PIN;
 
 /**
@@ -34,7 +37,8 @@ import static org.eclipse.che.ide.part.editor.actions.PinEditorTabAction.PROP_PI
  */
 public class EditorTabContextMenu extends ContextMenu {
 
-    private final EditorTab editorTab;
+    private final EditorTab                    editorTab;
+    private final ActionManager                actionManager;
 
     @Inject
     public EditorTabContextMenu(@Assisted EditorTab editorTab,
@@ -42,7 +46,11 @@ public class EditorTabContextMenu extends ContextMenu {
                                 KeyBindingAgent keyBindingAgent,
                                 Provider<PerspectiveManager> managerProvider) {
         super(actionManager, keyBindingAgent, managerProvider);
+
         this.editorTab = editorTab;
+        this.actionManager = actionManager;
+
+        updateActions();
     }
 
     /** {@inheritDoc} */
@@ -51,13 +59,20 @@ public class EditorTabContextMenu extends ContextMenu {
         return IdeActions.GROUP_EDITOR_TAB_CONTEXT_MENU;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void onActionSelected(Action action) {
-        super.onActionSelected(action);
 
-        //pass into action file property and editor tab pin state
-        presentationFactory.getPresentation(action).putClientProperty(CURRENT_FILE_PROP, editorTab.getFile());
-        presentationFactory.getPresentation(action).putClientProperty(PROP_PIN, editorTab.isPinned());
+    private void updateActions() {
+        final ActionGroup mainActionGroup = (ActionGroup)actionManager.getAction(getGroupMenu());
+        if (mainActionGroup == null) {
+            return;
+        }
+
+        final Action[] children = mainActionGroup.getChildren(null);
+        for (final Action action : children) {
+            final Presentation presentation = presentationFactory.getPresentation(action);
+            //pass into action file property and editor tab pin state
+            presentation.putClientProperty(CURRENT_FILE_PROP, editorTab.getFile());
+            presentation.putClientProperty(PROP_PIN, editorTab.isPinned());
+            presentation.putClientProperty(CURRENT_TAB_PROP, editorTab);
+        }
     }
 }

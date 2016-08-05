@@ -48,16 +48,18 @@ public class ContextMenu implements CloseMenuHandler, ActionSelectedHandler {
 
     private final ActionManager                actionManager;
     private final KeyBindingAgent              keyBindingAgent;
-    private final DefaultActionGroup           actions;
     private final Provider<PerspectiveManager> managerProvider;
 
     private PopupMenu     popupMenu;
     private MenuLockLayer lockLayer;
 
     protected final PresentationFactory presentationFactory;
+    protected final DefaultActionGroup  actions;
 
     @Inject
-    public ContextMenu(ActionManager actionManager, KeyBindingAgent keyBindingAgent, Provider<PerspectiveManager> managerProvider) {
+    public ContextMenu(ActionManager actionManager,
+                       KeyBindingAgent keyBindingAgent,
+                       Provider<PerspectiveManager> managerProvider) {
         this.actionManager = actionManager;
         this.keyBindingAgent = keyBindingAgent;
         this.managerProvider = managerProvider;
@@ -171,5 +173,4 @@ public class ContextMenu implements CloseMenuHandler, ActionSelectedHandler {
             lockLayer = null;
         }
     }
-
 }

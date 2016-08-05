@@ -34,6 +34,7 @@ import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -307,5 +308,4 @@ public class PartStackPresenter implements Presenter, PartStackView.ActionDelega
         /** PartStack is being clicked and requests Focus */
         void onRequestFocus(PartStack partStack);
     }
-
 }

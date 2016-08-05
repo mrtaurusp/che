@@ -13,8 +13,6 @@ package org.eclipse.che.ide.part.editor.event;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
-import org.eclipse.che.ide.api.resources.VirtualFile;
-
 /**
  * Event fires when editor tab either pinned or not.
  *
@@ -35,11 +33,11 @@ public class PinEditorTabEvent extends GwtEvent<PinEditorTabEvent.PinEditorTabEv
         return TYPE;
     }
 
-    private final VirtualFile file;
-    private final boolean     pin;
+    private final String  tabId;
+    private final boolean pin;
 
-    public PinEditorTabEvent(VirtualFile file, boolean pin) {
-        this.file = file;
+    public PinEditorTabEvent(String tabId, boolean pin) {
+        this.tabId = tabId;
         this.pin = pin;
     }
 
@@ -50,12 +48,12 @@ public class PinEditorTabEvent extends GwtEvent<PinEditorTabEvent.PinEditorTabEv
     }
 
     /**
-     * Return file associated with pin operation.
+     * Return tab's ID associated with pin operation.
      *
-     * @return {@link VirtualFile} file
+     * @return tab's ID
      */
-    public VirtualFile getFile() {
-        return file;
+    public String getTabId() {
+        return tabId;
     }
 
     /**

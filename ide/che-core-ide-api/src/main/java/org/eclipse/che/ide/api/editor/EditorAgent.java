@@ -13,6 +13,8 @@ package org.eclipse.che.ide.api.editor;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import org.eclipse.che.commons.annotation.Nullable;
+import org.eclipse.che.ide.api.constraints.Constraints;
+import org.eclipse.che.ide.api.parts.EditorPartStack;
 import org.eclipse.che.ide.api.resources.VirtualFile;
 import org.eclipse.che.ide.resource.Path;
 
@@ -34,11 +36,20 @@ public interface EditorAgent {
     void openEditor(@NotNull final VirtualFile file);
 
     /**
-     * Close editor with given file
+     * Open editor with given file
      *
-     * @param file the file to close
+     * @param file
+     *         the file to open
      */
-    void closeEditor(@NotNull final VirtualFile file);
+    void openEditor(@NotNull final VirtualFile file, Constraints constraints);
+
+    /**
+     * Close editor part
+     *
+     * @param editorPart
+     *         the part to close
+     */
+    void closeEditor(EditorPartPresenter editorPart);
 
     /**
      * Open editor with given file, call callback when editor fully loaded and initialized.

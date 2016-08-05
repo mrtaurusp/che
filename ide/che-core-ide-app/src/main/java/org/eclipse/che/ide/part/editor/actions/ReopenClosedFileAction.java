@@ -15,59 +15,52 @@ import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
 
 import org.eclipse.che.ide.CoreLocalizationConstant;
-import org.eclipse.che.ide.api.action.AbstractPerspectiveAction;
 import org.eclipse.che.ide.api.action.ActionEvent;
+import org.eclipse.che.ide.api.editor.EditorAgent;
+import org.eclipse.che.ide.api.editor.EditorPartPresenter;
 import org.eclipse.che.ide.api.event.FileEvent;
-import org.eclipse.che.ide.api.event.FileEventHandler;
+import org.eclipse.che.ide.api.parts.EditorPartStack;
+import org.eclipse.che.ide.api.parts.PartPresenter;
 import org.eclipse.che.ide.api.resources.VirtualFile;
+import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
 
 import javax.validation.constraints.NotNull;
 
-import static java.util.Collections.singletonList;
-import static org.eclipse.che.ide.api.event.FileEvent.FileOperation.CLOSE;
-import static org.eclipse.che.ide.api.event.FileEvent.FileOperation.OPEN;
-import static org.eclipse.che.ide.workspace.perspectives.project.ProjectPerspective.PROJECT_PERSPECTIVE_ID;
-
-
 /**
- * Performs restoring closed editor tab.
+ * Performs restoring closed editor tab for current editor part stack.
  *
  * @author Vlad Zhukovskiy
+ * @author Roman Nikitenko
  */
 @Singleton
-public class ReopenClosedFileAction extends AbstractPerspectiveAction implements FileEventHandler {
-
-    private final EventBus             eventBus;
-
-    private VirtualFile lastClosed;
+public class ReopenClosedFileAction extends EditorAbstractAction {
 
     @Inject
-    public ReopenClosedFileAction(EventBus eventBus, CoreLocalizationConstant locale) {
-        super(singletonList(PROJECT_PERSPECTIVE_ID), locale.editorTabReopenClosedTab(), locale.editorTabReopenClosedTabDescription(), null,
-              null);
-        this.eventBus = eventBus;
-        eventBus.addHandler(FileEvent.TYPE, this);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void onFileOperation(FileEvent event) {
-        if (event.getOperationType() == CLOSE) {
-            lastClosed = event.getFile();
-        } else if (event.getOperationType() == OPEN && lastClosed != null && lastClosed.equals(event.getFile())) {
-            lastClosed = null;
-        }
+    public ReopenClosedFileAction(EventBus eventBus,
+                                  CoreLocalizationConstant locale,
+                                  EditorAgent editorAgent,
+                                  EditorMultiPartStackPresenter editorMultiPartStackPresenter) {
+        super(locale.editorTabReopenClosedTab(), locale.editorTabReopenClosedTabDescription(), null, editorAgent,
+              eventBus, editorMultiPartStackPresenter);
     }
 
     /** {@inheritDoc} */
     @Override
     public void updateInPerspective(@NotNull ActionEvent event) {
-        event.getPresentation().setEnabled(lastClosed != null);
+        EditorPartPresenter currentEditor = getEditorTab(event).getRelativeEditorPart();
+        EditorPartStack currentPartStack = editorMultiPartStack.getPartStackByPart(currentEditor);
+
+        event.getPresentation().setEnabled(currentPartStack != null && currentPartStack.getLastClosed() != null);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void actionPerformed(ActionEvent e) {
-        eventBus.fireEvent(new FileEvent(lastClosed, OPEN));
+    public void actionPerformed(ActionEvent event) {
+        EditorPartPresenter currentEditor = getEditorTab(event).getRelativeEditorPart();
+        EditorPartStack currentPartStack = editorMultiPartStack.getPartStackByPart(currentEditor);
+        PartPresenter lastClosedPart = currentPartStack.getLastClosed();
+        VirtualFile file = ((EditorPartPresenter)lastClosedPart).getEditorInput().getFile();
+
+        eventBus.fireEvent(FileEvent.createOpenFileEvent(file));
     }
 }

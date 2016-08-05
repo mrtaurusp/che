@@ -16,37 +16,33 @@ import com.google.web.bindery.event.shared.EventBus;
 
 import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.api.action.ActionEvent;
+import org.eclipse.che.ide.api.constraints.Constraints;
 import org.eclipse.che.ide.api.editor.EditorAgent;
-import org.eclipse.che.ide.part.editor.event.PinEditorTabEvent;
 import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
 
+import static org.eclipse.che.ide.api.constraints.Direction.HORIZONTALLY;
+
 /**
- * Pin/Unpin current selected editor tab.
+ * Adds copy of selected editor and divides area of the editor horizontally.
  *
- * @author Vlad Zhukovskiy
+ * @author Roman Nikitenko
  */
 @Singleton
-public class PinEditorTabAction extends EditorAbstractAction {
-
-    public static final String PROP_PIN = "pin";
+public class SplitHorizontallyAction extends EditorAbstractAction {
 
     @Inject
-    public PinEditorTabAction(EditorAgent editorAgent,
-                              EventBus eventBus,
-                              CoreLocalizationConstant locale,
-                              EditorMultiPartStackPresenter editorMultiPartStackPresenter) {
-        super(locale.editorTabPin(), locale.editorTabPinDescription(), null, editorAgent, eventBus, editorMultiPartStackPresenter);
+    public SplitHorizontallyAction(EditorAgent editorAgent,
+                                   EventBus eventBus,
+                                   CoreLocalizationConstant locale,
+                                   EditorMultiPartStackPresenter editorMultiPartStackPresenter) {
+        super(locale.editorTabSplitHorizontally(), locale.editorTabSplitHorizontallyDescription(), null, editorAgent, eventBus,
+              editorMultiPartStackPresenter);
     }
 
     /** {@inheritDoc} */
     @Override
     public void actionPerformed(ActionEvent e) {
-        eventBus.fireEvent(new PinEditorTabEvent(getEditorTab(e).getId(), !isPinned(e)));
-    }
-
-    private boolean isPinned(ActionEvent e) {
-        Object o = e.getPresentation().getClientProperty(PROP_PIN);
-
-        return o instanceof Boolean && (Boolean)o;
+        Constraints constraints = new Constraints(HORIZONTALLY, getEditorTab(e).getId());
+        editorAgent.openEditor(getEditorFile(e), constraints);
     }
 }

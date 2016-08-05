@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.che.ide.part.editor.actions;
 
-import com.google.common.base.Predicate;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.web.bindery.event.shared.EventBus;
@@ -19,16 +18,16 @@ import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.api.action.ActionEvent;
 import org.eclipse.che.ide.api.editor.EditorAgent;
 import org.eclipse.che.ide.api.editor.EditorPartPresenter;
-import org.eclipse.che.ide.api.event.FileEvent;
-import org.eclipse.che.ide.api.resources.VirtualFile;
+import org.eclipse.che.ide.api.parts.EditorPartStack;
+import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
 
-import static com.google.common.collect.Iterables.filter;
-import static org.eclipse.che.ide.api.event.FileEvent.FileOperation.CLOSE;
+import javax.validation.constraints.NotNull;
 
 /**
- * Performs closing all opened editors except selected one.
+ * Performs closing all opened editors except selected one for current editor part stack.
  *
  * @author Vlad Zhukovskiy
+ * @author Roman Nikitenko
  */
 @Singleton
 public class CloseOtherAction extends EditorAbstractAction {
@@ -36,24 +35,42 @@ public class CloseOtherAction extends EditorAbstractAction {
     @Inject
     public CloseOtherAction(EditorAgent editorAgent,
                             EventBus eventBus,
-                            CoreLocalizationConstant locale) {
-        super(locale.editorTabCloseAllExceptSelected(), locale.editorTabCloseAllExceptSelectedDescription(), null, editorAgent, eventBus);
+                            CoreLocalizationConstant locale,
+                            EditorMultiPartStackPresenter editorMultiPartStackPresenter) {
+        super(locale.editorTabCloseAllExceptSelected(),
+              locale.editorTabCloseAllExceptSelectedDescription(),
+              null, editorAgent, eventBus,
+              editorMultiPartStackPresenter);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void actionPerformed(ActionEvent e) {
-        final VirtualFile virtualFile = getEditorFile(e);
+    public void updateInPerspective(@NotNull ActionEvent event) {
+        event.getPresentation().setEnabled(isFilesToCloseExist(event));
+    }
 
-        Iterable<EditorPartPresenter> filtered = filter(editorAgent.getOpenedEditors(), new Predicate<EditorPartPresenter>() {
-            @Override
-            public boolean apply(EditorPartPresenter input) {
-                return !input.getEditorInput().getFile().equals(virtualFile);
+    /** {@inheritDoc} */
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        EditorPartPresenter currentEditor = getEditorTab(event).getRelativeEditorPart();
+        EditorPartStack currentPartStack = editorMultiPartStack.getPartStackByPart(currentEditor);
+
+        for (EditorPartPresenter editorPart : editorAgent.getOpenedEditors()) {
+            if (currentEditor != editorPart && currentPartStack.containsPart(editorPart)) {
+                editorAgent.closeEditor(editorPart);
             }
-        });
-
-        for (final EditorPartPresenter toClose : filtered) {
-            eventBus.fireEvent(new FileEvent(toClose.getEditorInput().getFile(), CLOSE));
         }
+    }
+
+    private boolean isFilesToCloseExist(ActionEvent event) {
+        EditorPartPresenter currentEditor = getEditorTab(event).getRelativeEditorPart();
+        EditorPartStack currentPartStack = editorMultiPartStack.getPartStackByPart(currentEditor);
+
+        for (EditorPartPresenter openedEditor : editorAgent.getOpenedEditors()) {
+            if (currentEditor != openedEditor && currentPartStack.containsPart(openedEditor)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -8,19 +8,18 @@
  * Contributors:
  *   Codenvy, S.A. - initial API and implementation
  *******************************************************************************/
-package org.eclipse.che.ide.api.event;
+package org.eclipse.che.ide.part.editor.multipart;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
+
+import org.eclipse.che.ide.api.constraints.Direction;
 
 /**
- * Handles OpenFileEvent.
- *
- * @author Nikolay Zamosenchuk
+ * @author Roman Nikitenko
  */
-public interface FileEventHandler extends EventHandler {
-    /**
-     * @param event
-     *         OpenFileEvent
-     */
-    void onFileOperation(FileEvent event);
+public interface SplitEditorPartFactory {
+
+    SplitEditorPartView create(IsWidget specimen);
+    SplitEditorPartView create(IsWidget specimen, SplitEditorPartView parent);
 }

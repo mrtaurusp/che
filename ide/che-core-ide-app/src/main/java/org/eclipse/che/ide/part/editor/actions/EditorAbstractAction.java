@@ -16,6 +16,8 @@ import org.eclipse.che.ide.api.action.AbstractPerspectiveAction;
 import org.eclipse.che.ide.api.action.ActionEvent;
 import org.eclipse.che.ide.api.editor.EditorAgent;
 import org.eclipse.che.ide.api.resources.VirtualFile;
+import org.eclipse.che.ide.api.parts.EditorTab;
+import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
 import org.vectomatic.dom.svg.ui.SVGResource;
 
 import javax.validation.constraints.NotNull;
@@ -31,18 +33,22 @@ import static org.eclipse.che.ide.workspace.perspectives.project.ProjectPerspect
 public abstract class EditorAbstractAction extends AbstractPerspectiveAction {
 
     public static final String CURRENT_FILE_PROP = "source";
+    public static final String CURRENT_TAB_PROP  = "tab";
 
-    protected EditorAgent          editorAgent;
-    protected EventBus             eventBus;
+    protected final EventBus                      eventBus;
+    protected final EditorAgent                   editorAgent;
+    protected final EditorMultiPartStackPresenter editorMultiPartStack;
 
     public EditorAbstractAction(String tooltip,
                                 String description,
                                 SVGResource icon,
                                 EditorAgent editorAgent,
-                                EventBus eventBus) {
+                                EventBus eventBus,
+                                EditorMultiPartStackPresenter editorMultiPartStack) {
         super(singletonList(PROJECT_PERSPECTIVE_ID), tooltip, description, null, icon);
-        this.editorAgent = editorAgent;
         this.eventBus = eventBus;
+        this.editorAgent = editorAgent;
+        this.editorMultiPartStack = editorMultiPartStack;
     }
 
     /** {@inheritDoc} */
@@ -68,5 +74,15 @@ public abstract class EditorAbstractAction extends AbstractPerspectiveAction {
         }
 
         throw new IllegalStateException("File doesn't provided");
+    }
+
+    protected EditorTab getEditorTab(ActionEvent e) {
+        Object o = e.getPresentation().getClientProperty(CURRENT_TAB_PROP);
+
+        if (o instanceof EditorTab) {
+            return (EditorTab)o;
+        }
+
+        throw new IllegalStateException("Tab doesn't provided");
     }
 }
