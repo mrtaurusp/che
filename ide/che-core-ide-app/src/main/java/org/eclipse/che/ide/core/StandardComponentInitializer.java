@@ -16,7 +16,7 @@ import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 
 import org.eclipse.che.ide.Resources;
-import org.eclipse.che.ide.actions.CloseActiveEditor;
+import org.eclipse.che.ide.actions.CloseActiveEditorAction;
 import org.eclipse.che.ide.actions.CollapseAllAction;
 import org.eclipse.che.ide.actions.CompleteAction;
 import org.eclipse.che.ide.actions.ConvertFolderToProjectAction;
@@ -266,7 +266,7 @@ public class StandardComponentInitializer {
     private OpenRecentFilesAction openRecentFilesAction;
 
     @Inject
-    private CloseActiveEditor closeActiveEditor;
+    private CloseActiveEditorAction closeActiveEditorAction;
 
     @Inject
     private MessageLoaderResources messageLoaderResources;
@@ -449,8 +449,8 @@ public class StandardComponentInitializer {
 
         editGroup.addSeparator();
 
-        actionManager.registerAction("closeActiveEditor", closeActiveEditor);
-        editGroup.add(closeActiveEditor);
+        actionManager.registerAction("closeActiveEditor", closeActiveEditorAction);
+        editGroup.add(closeActiveEditorAction);
 
         actionManager.registerAction("format", formatterAction);
         editGroup.add(formatterAction);

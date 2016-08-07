@@ -18,7 +18,6 @@ import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.api.action.ActionEvent;
 import org.eclipse.che.ide.api.editor.EditorAgent;
 import org.eclipse.che.ide.api.event.FileEvent;
-import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
 
 /**
  * Performs closing selected editor.
@@ -31,9 +30,8 @@ public class CloseAction extends EditorAbstractAction {
     @Inject
     public CloseAction(EditorAgent editorAgent,
                        EventBus eventBus,
-                       CoreLocalizationConstant locale,
-                       EditorMultiPartStackPresenter editorMultiPartStackPresenter) {
-        super(locale.editorTabClose(), locale.editorTabCloseDescription(), null, editorAgent, eventBus, editorMultiPartStackPresenter);
+                       CoreLocalizationConstant locale) {
+        super(locale.editorTabClose(), locale.editorTabCloseDescription(), null, editorAgent, eventBus);
     }
 
     /** {@inheritDoc} */

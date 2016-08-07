@@ -18,8 +18,6 @@ import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.api.action.ActionEvent;
 import org.eclipse.che.ide.api.editor.EditorAgent;
 import org.eclipse.che.ide.api.editor.EditorPartPresenter;
-import org.eclipse.che.ide.api.parts.EditorPartStack;
-import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
 
 import javax.validation.constraints.NotNull;
 
@@ -35,12 +33,10 @@ public class CloseOtherAction extends EditorAbstractAction {
     @Inject
     public CloseOtherAction(EditorAgent editorAgent,
                             EventBus eventBus,
-                            CoreLocalizationConstant locale,
-                            EditorMultiPartStackPresenter editorMultiPartStackPresenter) {
+                            CoreLocalizationConstant locale) {
         super(locale.editorTabCloseAllExceptSelected(),
               locale.editorTabCloseAllExceptSelectedDescription(),
-              null, editorAgent, eventBus,
-              editorMultiPartStackPresenter);
+              null, editorAgent, eventBus);
     }
 
     /** {@inheritDoc} */
@@ -53,10 +49,8 @@ public class CloseOtherAction extends EditorAbstractAction {
     @Override
     public void actionPerformed(ActionEvent event) {
         EditorPartPresenter currentEditor = getEditorTab(event).getRelativeEditorPart();
-        EditorPartStack currentPartStack = editorMultiPartStack.getPartStackByPart(currentEditor);
-
-        for (EditorPartPresenter editorPart : editorAgent.getOpenedEditors()) {
-            if (currentEditor != editorPart && currentPartStack.containsPart(editorPart)) {
+        for (EditorPartPresenter editorPart : editorAgent.getOpenedEditorsBasedOn(currentEditor)) {
+            if (currentEditor != editorPart) {
                 editorAgent.closeEditor(editorPart);
             }
         }
@@ -64,10 +58,8 @@ public class CloseOtherAction extends EditorAbstractAction {
 
     private boolean isFilesToCloseExist(ActionEvent event) {
         EditorPartPresenter currentEditor = getEditorTab(event).getRelativeEditorPart();
-        EditorPartStack currentPartStack = editorMultiPartStack.getPartStackByPart(currentEditor);
-
-        for (EditorPartPresenter openedEditor : editorAgent.getOpenedEditors()) {
-            if (currentEditor != openedEditor && currentPartStack.containsPart(openedEditor)) {
+        for (EditorPartPresenter openedEditor : editorAgent.getOpenedEditorsBasedOn(currentEditor)) {
+            if (currentEditor != openedEditor) {
                 return true;
             }
         }

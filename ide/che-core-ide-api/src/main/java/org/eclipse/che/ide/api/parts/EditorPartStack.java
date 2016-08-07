@@ -26,7 +26,7 @@ public interface EditorPartStack extends PartStack {
     EditorPartPresenter getPartByTabId(@NotNull String tabId);
 
     PartPresenter getPartByPath(Path path);
-    PartPresenter getNextFor(EditorPartPresenter editorPart);
-    PartPresenter getPreviousFor(EditorPartPresenter editorPart);
-    PartPresenter getLastClosed();
+    EditorPartPresenter getNextFor(EditorPartPresenter editorPart);
+    EditorPartPresenter getPreviousFor(EditorPartPresenter editorPart);
+    EditorPartPresenter getLastClosed();
 }

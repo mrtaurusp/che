@@ -18,7 +18,6 @@ import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.api.action.ActionEvent;
 import org.eclipse.che.ide.api.constraints.Constraints;
 import org.eclipse.che.ide.api.editor.EditorAgent;
-import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
 
 import static org.eclipse.che.ide.api.constraints.Direction.VERTICALLY;
 
@@ -33,10 +32,8 @@ public class SplitVerticallyAction extends EditorAbstractAction {
     @Inject
     public SplitVerticallyAction(EditorAgent editorAgent,
                                  EventBus eventBus,
-                                 CoreLocalizationConstant locale,
-                                 EditorMultiPartStackPresenter editorMultiPartStackPresenter) {
-        super(locale.editorTabSplitVertically(), locale.editorTabSplitVerticallyDescription(), null, editorAgent, eventBus,
-              editorMultiPartStackPresenter);
+                                 CoreLocalizationConstant locale) {
+        super(locale.editorTabSplitVertically(), locale.editorTabSplitVerticallyDescription(), null, editorAgent, eventBus);
     }
 
     /** {@inheritDoc} */

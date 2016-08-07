@@ -18,7 +18,6 @@ import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.api.action.ActionEvent;
 import org.eclipse.che.ide.api.constraints.Constraints;
 import org.eclipse.che.ide.api.editor.EditorAgent;
-import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
 
 import static org.eclipse.che.ide.api.constraints.Direction.HORIZONTALLY;
 
@@ -33,10 +32,8 @@ public class SplitHorizontallyAction extends EditorAbstractAction {
     @Inject
     public SplitHorizontallyAction(EditorAgent editorAgent,
                                    EventBus eventBus,
-                                   CoreLocalizationConstant locale,
-                                   EditorMultiPartStackPresenter editorMultiPartStackPresenter) {
-        super(locale.editorTabSplitHorizontally(), locale.editorTabSplitHorizontallyDescription(), null, editorAgent, eventBus,
-              editorMultiPartStackPresenter);
+                                   CoreLocalizationConstant locale) {
+        super(locale.editorTabSplitHorizontally(), locale.editorTabSplitHorizontallyDescription(), null, editorAgent, eventBus);
     }
 
     /** {@inheritDoc} */

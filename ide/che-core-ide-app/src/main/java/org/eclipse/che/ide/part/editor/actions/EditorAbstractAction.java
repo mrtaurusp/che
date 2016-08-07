@@ -15,9 +15,8 @@ import com.google.web.bindery.event.shared.EventBus;
 import org.eclipse.che.ide.api.action.AbstractPerspectiveAction;
 import org.eclipse.che.ide.api.action.ActionEvent;
 import org.eclipse.che.ide.api.editor.EditorAgent;
-import org.eclipse.che.ide.api.resources.VirtualFile;
 import org.eclipse.che.ide.api.parts.EditorTab;
-import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
+import org.eclipse.che.ide.api.resources.VirtualFile;
 import org.vectomatic.dom.svg.ui.SVGResource;
 
 import javax.validation.constraints.NotNull;
@@ -37,24 +36,21 @@ public abstract class EditorAbstractAction extends AbstractPerspectiveAction {
 
     protected final EventBus                      eventBus;
     protected final EditorAgent                   editorAgent;
-    protected final EditorMultiPartStackPresenter editorMultiPartStack;
 
     public EditorAbstractAction(String tooltip,
                                 String description,
                                 SVGResource icon,
                                 EditorAgent editorAgent,
-                                EventBus eventBus,
-                                EditorMultiPartStackPresenter editorMultiPartStack) {
+                                EventBus eventBus) {
         super(singletonList(PROJECT_PERSPECTIVE_ID), tooltip, description, null, icon);
         this.eventBus = eventBus;
         this.editorAgent = editorAgent;
-        this.editorMultiPartStack = editorMultiPartStack;
     }
 
     /** {@inheritDoc} */
     @Override
     public void updateInPerspective(@NotNull ActionEvent event) {
-        event.getPresentation().setEnabledAndVisible(editorAgent.getOpenedEditors() != null && !editorAgent.getOpenedEditors().isEmpty());
+        event.getPresentation().setEnabledAndVisible(!editorAgent.getOpenedEditors().isEmpty());
     }
 
     /**

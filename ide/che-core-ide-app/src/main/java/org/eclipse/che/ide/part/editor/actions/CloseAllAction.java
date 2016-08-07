@@ -18,8 +18,6 @@ import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.api.action.ActionEvent;
 import org.eclipse.che.ide.api.editor.EditorAgent;
 import org.eclipse.che.ide.api.editor.EditorPartPresenter;
-import org.eclipse.che.ide.api.parts.EditorPartStack;
-import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
 
 /**
  * Performs closing all opened editors for current editor part stack.
@@ -33,21 +31,16 @@ public class CloseAllAction extends EditorAbstractAction {
     @Inject
     public CloseAllAction(EditorAgent editorAgent,
                           EventBus eventBus,
-                          CoreLocalizationConstant locale,
-                          EditorMultiPartStackPresenter editorMultiPartStack) {
-        super(locale.editorTabCloseAll(), locale.editorTabCloseAllDescription(), null, editorAgent, eventBus, editorMultiPartStack);
+                          CoreLocalizationConstant locale) {
+        super(locale.editorTabCloseAll(), locale.editorTabCloseAllDescription(), null, editorAgent, eventBus);
     }
 
     /** {@inheritDoc} */
     @Override
     public void actionPerformed(ActionEvent event) {
-        EditorPartPresenter openedEditor = getEditorTab(event).getRelativeEditorPart();
-        EditorPartStack editorPartStack = editorMultiPartStack.getPartStackByPart(openedEditor);
-
-        for (EditorPartPresenter editorPart : editorAgent.getOpenedEditors()) {
-            if (editorPartStack.containsPart(editorPart)) {
-                editorAgent.closeEditor(editorPart);
-            }
+        EditorPartPresenter currentEditor = getEditorTab(event).getRelativeEditorPart();
+        for (EditorPartPresenter editorPart : editorAgent.getOpenedEditorsBasedOn(currentEditor)) {
+            editorAgent.closeEditor(editorPart);
         }
     }
 }

@@ -98,8 +98,7 @@ public class EditorTabWidget extends Composite implements EditorTab, ContextMenu
     private EditorPartPresenter relatedEditorPart;
 
     @Inject
-    public EditorTabWidget(@Assisted VirtualFile file,
-                           @Assisted EditorPartPresenter relatedEditorPart,
+    public EditorTabWidget(@Assisted EditorPartPresenter relatedEditorPart,
                            PartStackUIResources resources,
                            EditorTabContextMenuFactory editorTabContextMenu,
                            final EventBus eventBus,
@@ -112,7 +111,7 @@ public class EditorTabWidget extends Composite implements EditorTab, ContextMenu
         initWidget(UI_BINDER.createAndBindUi(this));
 
         this.editorTabContextMenu = editorTabContextMenu;
-        this.file = file;
+        this.file = relatedEditorPart.getEditorInput().getFile();
         this.icon = relatedEditorPart.getTitleImage();
         this.title.setText(relatedEditorPart.getTitle());
         this.id = title + UUID.uuid(4);
@@ -324,6 +323,7 @@ public class EditorTabWidget extends Composite implements EditorTab, ContextMenu
 
     @Override
     public void onFileOperation(FileEvent event) {
+        Log.error(getClass(), "editor tab widget onFileOperation " + event.getEditorTab());
         if (event.getOperationType() == CLOSE && this.equals(event.getEditorTab())) {
             delegate.onTabClose(this);
         }

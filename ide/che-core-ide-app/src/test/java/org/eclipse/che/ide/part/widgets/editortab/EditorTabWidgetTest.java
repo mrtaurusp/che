@@ -84,7 +84,7 @@ public class EditorTabWidgetTest {
         when(icon.getSvg()).thenReturn(svg);
         when(event.getNativeButton()).thenReturn(NativeEvent.BUTTON_LEFT);
 
-        tab = new EditorTabWidget(file, icon, SOME_TEXT, resources, editorTabContextMenuFactory, eventBus, fileTypeRegistry);
+//        tab = new EditorTabWidget(file, icon, SOME_TEXT, resources, editorTabContextMenuFactory, eventBus, fileTypeRegistry);
         tab.setDelegate(delegate);
     }
 

@@ -109,7 +109,6 @@ public class ProjectPerspectiveTest {
 
 
         perspective = new ProjectPerspective(view,
-                                             editorPartStackPresenter,
                                              editorMultiPartStackPresenter,
                                              stackPresenterFactory,
                                              partViewFactory,
@@ -124,7 +123,6 @@ public class ProjectPerspectiveTest {
         when(partStackPresenter.containsPart(projectExplorerPart)).thenReturn(true);
 
         perspective = new ProjectPerspective(view,
-                                             editorPartStackPresenter,
                                              editorMultiPartStackPresenter,
                                              stackPresenterFactory,
                                              partViewFactory,

@@ -18,7 +18,6 @@ import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.api.action.ActionEvent;
 import org.eclipse.che.ide.api.editor.EditorAgent;
 import org.eclipse.che.ide.part.editor.event.PinEditorTabEvent;
-import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
 
 /**
  * Pin/Unpin current selected editor tab.
@@ -28,25 +27,14 @@ import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
 @Singleton
 public class PinEditorTabAction extends EditorAbstractAction {
 
-    public static final String PROP_PIN = "pin";
-
     @Inject
-    public PinEditorTabAction(EditorAgent editorAgent,
-                              EventBus eventBus,
-                              CoreLocalizationConstant locale,
-                              EditorMultiPartStackPresenter editorMultiPartStackPresenter) {
-        super(locale.editorTabPin(), locale.editorTabPinDescription(), null, editorAgent, eventBus, editorMultiPartStackPresenter);
+    public PinEditorTabAction(EditorAgent editorAgent, EventBus eventBus, CoreLocalizationConstant locale) {
+        super(locale.editorTabPin(), locale.editorTabPinDescription(), null, editorAgent, eventBus);
     }
 
     /** {@inheritDoc} */
     @Override
     public void actionPerformed(ActionEvent e) {
-        eventBus.fireEvent(new PinEditorTabEvent(getEditorTab(e).getId(), !isPinned(e)));
-    }
-
-    private boolean isPinned(ActionEvent e) {
-        Object o = e.getPresentation().getClientProperty(PROP_PIN);
-
-        return o instanceof Boolean && (Boolean)o;
+        eventBus.fireEvent(new PinEditorTabEvent(getEditorTab(e)));
     }
 }

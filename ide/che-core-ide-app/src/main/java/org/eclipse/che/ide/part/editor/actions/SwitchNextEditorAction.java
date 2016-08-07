@@ -17,7 +17,6 @@ import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.api.action.ActionEvent;
 import org.eclipse.che.ide.api.editor.EditorAgent;
 import org.eclipse.che.ide.api.editor.EditorPartPresenter;
-import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -32,9 +31,8 @@ public class SwitchNextEditorAction extends EditorSwitchAction {
 
     @Inject
     public SwitchNextEditorAction(CoreLocalizationConstant constant,
-                                  EditorAgent editorAgent,
-                                  EditorMultiPartStackPresenter editorMultiPartStackPresenter) {
-        super(constant.switchToRightEditorAction(), constant.switchToRightEditorActionDescription(), editorAgent, editorMultiPartStackPresenter);
+                                  EditorAgent editorAgent) {
+        super(constant.switchToRightEditorAction(), constant.switchToRightEditorActionDescription(), editorAgent);
     }
 
     /** {@inheritDoc} */

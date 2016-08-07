@@ -16,8 +16,6 @@ import org.eclipse.che.ide.api.action.AbstractPerspectiveAction;
 import org.eclipse.che.ide.api.action.ActionEvent;
 import org.eclipse.che.ide.api.editor.EditorAgent;
 import org.eclipse.che.ide.api.editor.EditorPartPresenter;
-import org.eclipse.che.ide.api.parts.EditorPartStack;
-import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
 
 import javax.validation.constraints.NotNull;
 
@@ -33,13 +31,10 @@ import static org.eclipse.che.ide.workspace.perspectives.project.ProjectPerspect
 abstract class EditorSwitchAction extends AbstractPerspectiveAction {
 
     protected final EditorAgent                   editorAgent;
-    protected final EditorMultiPartStackPresenter editorMultiPartStackPresenter;
 
-    public EditorSwitchAction(String text, String description, EditorAgent editorAgent,
-                              EditorMultiPartStackPresenter editorMultiPartStackPresenter) {
+    public EditorSwitchAction(String text, String description, EditorAgent editorAgent) {
         super(singletonList(PROJECT_PERSPECTIVE_ID), text, description, null, null);
         this.editorAgent = editorAgent;
-        this.editorMultiPartStackPresenter = editorMultiPartStackPresenter;
     }
 
     @Override
@@ -51,14 +46,12 @@ abstract class EditorSwitchAction extends AbstractPerspectiveAction {
     protected EditorPartPresenter getPreviousEditorBaseOn(EditorPartPresenter editor) {
         checkArgument(editor != null);
 
-        EditorPartStack currentPartStack = editorMultiPartStackPresenter.getPartStackByPart(editor);
-        return (EditorPartPresenter)currentPartStack.getPreviousFor(editor);
+        return editorAgent.getPreviousFor(editor);
     }
 
     protected EditorPartPresenter getNextEditorBaseOn(EditorPartPresenter editor) {
         checkArgument(editor != null);
 
-        EditorPartStack currentPartStack = editorMultiPartStackPresenter.getPartStackByPart(editor);
-        return (EditorPartPresenter)currentPartStack.getNextFor(editor);
+        return editorAgent.getNextFor(editor);
     }
 }

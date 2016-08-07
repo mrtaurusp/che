@@ -15,6 +15,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.che.commons.annotation.Nullable;
 import org.eclipse.che.ide.api.constraints.Constraints;
 import org.eclipse.che.ide.api.parts.EditorPartStack;
+import org.eclipse.che.ide.api.parts.EditorTab;
+import org.eclipse.che.ide.api.parts.PartPresenter;
 import org.eclipse.che.ide.api.resources.VirtualFile;
 import org.eclipse.che.ide.resource.Path;
 
@@ -79,6 +81,9 @@ public interface EditorAgent {
     @NotNull
     List<EditorPartPresenter> getOpenedEditors();
 
+    @NotNull
+    List<EditorPartPresenter> getOpenedEditorsBasedOn(EditorPartPresenter editorPart);
+
     /**
      * Get opened editor by related file path
      *
@@ -102,6 +107,10 @@ public interface EditorAgent {
      */
     @Nullable
     EditorPartPresenter getActiveEditor();
+
+    EditorPartPresenter getNextFor(EditorPartPresenter editorPart);
+    EditorPartPresenter getPreviousFor(EditorPartPresenter editorPart);
+    EditorPartPresenter getLastClosedBasedOn(EditorPartPresenter editorPart);
 
     interface OpenEditorCallback {
         void onEditorOpened(EditorPartPresenter editor);

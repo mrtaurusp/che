@@ -216,12 +216,12 @@ public class EditorMultiPartStackPresenter implements EditorPartStack, ActivePar
     }
 
     @Override
-    public PartPresenter getNextFor(EditorPartPresenter editorPart) {
+    public EditorPartPresenter getNextFor(EditorPartPresenter editorPart) {
         return null;
     }
 
     @Override
-    public PartPresenter getPreviousFor(EditorPartPresenter editorPart) {
+    public EditorPartPresenter getPreviousFor(EditorPartPresenter editorPart) {
         return null;
     }
 

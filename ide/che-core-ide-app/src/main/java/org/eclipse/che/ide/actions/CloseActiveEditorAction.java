@@ -29,13 +29,13 @@ import static org.eclipse.che.ide.workspace.perspectives.project.ProjectPerspect
  * @author Vlad Zhukovskiy
  */
 @Singleton
-public class CloseActiveEditor extends AbstractPerspectiveAction {
+public class CloseActiveEditorAction extends AbstractPerspectiveAction {
 
     private final EditorAgent editorAgent;
 
     @Inject
-    public CloseActiveEditor(CoreLocalizationConstant locale,
-                             EditorAgent editorAgent) {
+    public CloseActiveEditorAction(CoreLocalizationConstant locale,
+                                   EditorAgent editorAgent) {
         super(singletonList(PROJECT_PERSPECTIVE_ID), locale.editorTabClose(), locale.editorTabCloseDescription(), null, null);
         this.editorAgent = editorAgent;
     }

@@ -42,12 +42,14 @@ import org.eclipse.che.ide.api.parts.PartPresenter;
 import org.eclipse.che.ide.api.parts.PropertyListener;
 import org.eclipse.che.ide.api.parts.WorkspaceAgent;
 import org.eclipse.che.ide.api.resources.VirtualFile;
+import org.eclipse.che.ide.part.editor.EditorPartStackPresenter;
 import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
 import org.eclipse.che.ide.resource.Path;
 import org.eclipse.che.ide.util.loging.Log;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -250,6 +252,22 @@ public class EditorAgentImpl implements EditorAgent,
     }
 
     @Override
+    public List<EditorPartPresenter> getOpenedEditorsBasedOn(EditorPartPresenter editorPart) {
+        List<EditorPartPresenter> result = newArrayList();
+        EditorPartStack editorPartStack = editorMultiPartStack.getPartStackByPart(editorPart);
+        if (editorPartStack == null) {
+            return result;
+        }
+
+        for (EditorPartPresenter editor : openedEditors) {
+            if (editorPartStack.containsPart(editor)) {
+                result.add(editor);
+            }
+        }
+        return result;
+    }
+
+    @Override
     public EditorPartPresenter getOpenedEditor(Path path) {
         for (EditorPartPresenter editor : openedEditors) {
             if (path.equals(editor.getEditorInput().getFile().getLocation())) {
@@ -294,5 +312,23 @@ public class EditorAgentImpl implements EditorAgent,
     @Override
     public EditorPartPresenter getActiveEditor() {
         return activeEditor;
+    }
+
+    @Override
+    public EditorPartPresenter getNextFor(EditorPartPresenter editorPart) {
+        EditorPartStack editorPartStack = editorMultiPartStack.getPartStackByPart(editorPart);
+        return editorPartStack.getNextFor(editorPart);
+    }
+
+    @Override
+    public EditorPartPresenter getPreviousFor(EditorPartPresenter editorPart) {
+        EditorPartStack editorPartStack = editorMultiPartStack.getPartStackByPart(editorPart);
+        return editorPartStack.getPreviousFor(editorPart);
+    }
+
+    @Override
+    public EditorPartPresenter getLastClosedBasedOn(EditorPartPresenter editorPart) {
+        EditorPartStack editorPartStack = editorMultiPartStack.getPartStackByPart(editorPart);
+        return editorPartStack.getLastClosed();
     }
 }

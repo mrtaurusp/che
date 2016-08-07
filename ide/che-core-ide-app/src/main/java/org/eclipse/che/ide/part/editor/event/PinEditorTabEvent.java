@@ -13,6 +13,8 @@ package org.eclipse.che.ide.part.editor.event;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
+import org.eclipse.che.ide.api.parts.EditorTab;
+
 /**
  * Event fires when editor tab either pinned or not.
  *
@@ -21,7 +23,7 @@ import com.google.gwt.event.shared.GwtEvent;
 public class PinEditorTabEvent extends GwtEvent<PinEditorTabEvent.PinEditorTabEventHandler> {
 
     public interface PinEditorTabEventHandler extends EventHandler {
-        void onEditorTabPinned(PinEditorTabEvent event);
+        void onEditorTabPinned(EditorTab editorTab);
     }
 
     private static Type<PinEditorTabEventHandler> TYPE;
@@ -33,12 +35,10 @@ public class PinEditorTabEvent extends GwtEvent<PinEditorTabEvent.PinEditorTabEv
         return TYPE;
     }
 
-    private final String  tabId;
-    private final boolean pin;
+    private final EditorTab  tab;
 
-    public PinEditorTabEvent(String tabId, boolean pin) {
-        this.tabId = tabId;
-        this.pin = pin;
+    public PinEditorTabEvent(EditorTab tab) {
+        this.tab = tab;
     }
 
     /** {@inheritDoc} */
@@ -47,27 +47,9 @@ public class PinEditorTabEvent extends GwtEvent<PinEditorTabEvent.PinEditorTabEv
         return getType();
     }
 
-    /**
-     * Return tab's ID associated with pin operation.
-     *
-     * @return tab's ID
-     */
-    public String getTabId() {
-        return tabId;
-    }
-
-    /**
-     * Return true if opened file should be pinned.
-     *
-     * @return true if opened file should be pinned
-     */
-    public boolean isPin() {
-        return pin;
-    }
-
     /** {@inheritDoc} */
     @Override
     protected void dispatch(PinEditorTabEventHandler handler) {
-        handler.onEditorTabPinned(this);
+        handler.onEditorTabPinned(tab);
     }
 }

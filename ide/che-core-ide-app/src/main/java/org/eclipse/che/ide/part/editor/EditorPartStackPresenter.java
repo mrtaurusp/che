@@ -148,7 +148,7 @@ public class EditorPartStackPresenter extends PartStackPresenter implements Edit
 
         editorPart.addPropertyListener(propertyListener);
 
-        final EditorTab editorTab = tabItemFactory.createEditorPartButton(file, editorPart);
+        final EditorTab editorTab = tabItemFactory.createEditorPartButton(editorPart);
 
         editorPart.addPropertyListener(new PropertyListener() {
             @Override
@@ -257,16 +257,18 @@ public class EditorPartStackPresenter extends PartStackPresenter implements Edit
         items.remove(listItem);
 
         PartPresenter part = ((EditorTab)tab).getRelativeEditorPart();
+        Log.error(getClass(), "=== onTabClose add part  " + part);
         closedParts.add(part);
+        Log.error(getClass(), "=== onTabClose after add  " + parts.size());
     }
 
     /** {@inheritDoc} */
     @Override
-    public void onEditorTabPinned(PinEditorTabEvent event) {
-        String tabId = event.getTabId();
+    public void onEditorTabPinned(EditorTab editorTab) {
+        String tabId = editorTab.getId();
         for (TabItem tab : parts.keySet()) {
             if (tab instanceof EditorTab && ((EditorTab)tab).getId().equals(tabId)) {
-                ((EditorTab)tab).setPinMark(event.isPin());
+                ((EditorTab)tab).setPinMark(editorTab.isPinned());
             }
         }
     }
@@ -317,30 +319,29 @@ public class EditorPartStackPresenter extends PartStackPresenter implements Edit
     }
 
     @Override
-    public PartPresenter getNextFor(EditorPartPresenter editorPart) {
+    public EditorPartPresenter getNextFor(EditorPartPresenter editorPart) {
         int indexForNext = partsOrder.indexOf(editorPart) + 1;
-        return indexForNext >= partsOrder.size() ? partsOrder.getFirst() : partsOrder.get(indexForNext);
+        return indexForNext >= partsOrder.size() ? (EditorPartPresenter)partsOrder.getFirst()
+                                                 : (EditorPartPresenter)partsOrder.get(indexForNext);
     }
 
     @Override
-    public PartPresenter getPreviousFor(EditorPartPresenter editorPart) {
+    public EditorPartPresenter getPreviousFor(EditorPartPresenter editorPart) {
         int indexForNext = partsOrder.indexOf(editorPart) - 1;
-        return indexForNext < 0 ? partsOrder.getLast() : partsOrder.get(indexForNext);
+        return indexForNext < 0 ? (EditorPartPresenter)partsOrder.getLast() : (EditorPartPresenter)partsOrder.get(indexForNext);
     }
 
     @Nullable
     @Override
-    public PartPresenter getLastClosed() {
+    public EditorPartPresenter getLastClosed() {
         if (closedParts.isEmpty()) {
             return null;
         }
-        return closedParts.getLast();
+        return (EditorPartPresenter)closedParts.getLast();
     }
 
     @Override
     public void onResourceChanged(ResourceChangedEvent event) {
-        Log.error(getClass(), "=== onResourceChanged hash " + EditorPartStackPresenter.this.hashCode());
-        Log.error(getClass(), "=== onResourceChanged " + parts.size());
         final ResourceDelta delta = event.getDelta();
         if (delta.getKind() != REMOVED) {
             return;
@@ -350,6 +351,7 @@ public class EditorPartStackPresenter extends PartStackPresenter implements Edit
             Path resourcePath = delta.getResource().getLocation();
             Path editorPath = ((EditorPartPresenter)editorPart).getEditorInput().getFile().getLocation();
             if (editorPath.equals(resourcePath)) {
+                Log.error(getClass(), "====== remove from closed list");
                 closedParts.remove(editorPart);
             }
         }

@@ -18,7 +18,6 @@ import org.eclipse.che.ide.CoreLocalizationConstant;
 import org.eclipse.che.ide.api.action.ActionEvent;
 import org.eclipse.che.ide.api.editor.EditorAgent;
 import org.eclipse.che.ide.part.editor.event.CloseNonPinnedEditorsEvent;
-import org.eclipse.che.ide.part.editor.multipart.EditorMultiPartStackPresenter;
 
 /**
  * Performs closing editor tabs with unpinned status for current editor part stack.
@@ -31,10 +30,8 @@ public class CloseAllExceptPinnedAction extends EditorAbstractAction {
     @Inject
     public CloseAllExceptPinnedAction(EditorAgent editorAgent,
                                       EventBus eventBus,
-                                      CoreLocalizationConstant locale,
-                                      EditorMultiPartStackPresenter editorMultiPartStackPresenter) {
-        super(locale.editorTabCloseAllButPinned(), locale.editorTabCloseAllButPinnedDescription(), null, editorAgent, eventBus,
-              editorMultiPartStackPresenter);
+                                      CoreLocalizationConstant locale) {
+        super(locale.editorTabCloseAllButPinned(), locale.editorTabCloseAllButPinnedDescription(), null, editorAgent, eventBus);
     }
 
     /** {@inheritDoc} */

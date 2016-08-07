@@ -26,5 +26,5 @@ public interface TabItemFactory {
 
     PartButton createPartButton(@NotNull String title);
 
-    EditorTab createEditorPartButton(@Nullable VirtualFile virtualFile, @NotNull EditorPartPresenter relatedEditorPart);
+    EditorTab createEditorPartButton(@NotNull EditorPartPresenter relatedEditorPart);
 }
